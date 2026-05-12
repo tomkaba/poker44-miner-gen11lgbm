@@ -21,7 +21,7 @@ VENV_BIN="${POKER44_VENV_BIN:-$REPO/.venv/bin}"
 
 MANIFEST_REPO_URL="${POKER44_MODEL_REPO_URL:-https://github.com/tomkaba/poker44-miner-gen11lgbm}"
 MANIFEST_REPO_COMMIT="${POKER44_MODEL_REPO_COMMIT:-$(git -C "$REPO" rev-parse HEAD 2>/dev/null || true)}"
-MANIFEST_IMPL_FILES="models/benchmark_lgbm_model.pkl,models/benchmark_lgbm_profile.json,neurons/miner.py,poker44/base/miner.py,poker44/base/neuron.py,poker44/miner_heuristics.py,poker44/utils/config.py,poker44/utils/misc.py,poker44/utils/model_manifest.py,poker44/validator/synapse.py"
+MANIFEST_IMPL_FILES="neurons/miner.py,poker44/miner_heuristics.py,models/benchmark_lgbm_profile.json,models/benchmark_lgbm_model.pkl"
 
 if [[ -f "$ENV_FILE" ]]; then
   set -a
@@ -38,13 +38,18 @@ if [[ ! -x "$VENV_BIN/python" ]]; then
   exit 1
 fi
 
-MANIFEST_IMPL_SHA256="$($VENV_BIN/python - <<'PY' "$REPO" "$MANIFEST_IMPL_FILES"
+MANIFEST_IMPL_SHA256="$($VENV_BIN/python - <<'PY' "$REPO"
 from pathlib import Path
 import hashlib
 import sys
 
 repo_root = Path(sys.argv[1]).resolve()
-files = [f.strip() for f in sys.argv[2].split(',') if f.strip()]
+files = [
+    'neurons/miner.py',
+    'poker44/miner_heuristics.py',
+  'models/benchmark_lgbm_profile.json',
+  'models/benchmark_lgbm_model.pkl',
+]
 digest = hashlib.sha256()
 for rel in sorted(files):
     p = repo_root / rel
