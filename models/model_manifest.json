@@ -6,7 +6,7 @@
   "framework": "python-lightgbm",
   "license": "MIT",
   "repo_url": "https://github.com/tomkaba/poker44-miner-gen11lgbm",
-  "repo_commit": "9e0aa64dfe47cd9083b04110e4281d3f95e6cb58",
+  "repo_commit": "d753b68f2af76c8dafd97b523ebd6f7100e526da",
   "inference_mode": "remote",
   "training_data_statement": "No validator-private data used.",
   "data_attestation": "This miner does not train on validator-private human data.",
@@ -24,6 +24,6 @@
     "poker44/utils/model_manifest.py",
     "poker44/validator/synapse.py"
   ],
-  "implementation_sha256": "cbd77e19c0c350a6d96f1949018390f786c3da9350fc4cae46aaa9a415baeff2",
+  "implementation_sha256": "d26c80fe90f4bf1e6a68675a7215f1fe1d3537b114cbbae3ca2839ae7c7b75b8",
   "notes": "Gen11lgbm LightGBM chunk scorer."
 }
