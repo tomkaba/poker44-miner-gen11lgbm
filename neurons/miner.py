@@ -90,12 +90,12 @@ class Miner(BaseMinerNeuron):
 
         try:
             git_commit = subprocess.check_output(
-                ["git", "-C", str(repo_root), "rev-parse", "--short", "HEAD"],
+                ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
                 stderr=subprocess.DEVNULL,
                 timeout=5,
             ).decode().strip()
         except Exception:
-            git_commit = os.getenv("POKER44_MODEL_REPO_COMMIT", "")
+            git_commit = ""
 
         self.model_manifest = build_local_model_manifest(
             repo_root=repo_root,
@@ -151,6 +151,7 @@ class Miner(BaseMinerNeuron):
             f"Implementation sha256={self.model_manifest.get('implementation_sha256', '')} "
             f"files={len(self.model_manifest.get('implementation_files', []) or [])}"
         )
+        bt.logging.info(f"[init] Full response manifest={json.dumps(dict(self.model_manifest))}")
         bt.logging.info(f"Project root: {repo_root}")
 
     async def forward(self, synapse: DetectionSynapse) -> DetectionSynapse:
@@ -174,8 +175,9 @@ class Miner(BaseMinerNeuron):
 
         bt.logging.debug(f"[miner] Received {len(chunks)} chunk(s); first sizes={_preview(chunk_sizes)}")
 
+        bt.logging.info(f"[miner] Response manifest={json.dumps(dict(self.model_manifest))}")
         synapse.risk_scores = scores
-        synapse.predictions = [s >= 0.5 for s in scores]
+        synapse.predictions = [s >= 0.0001 for s in scores]
         synapse.model_manifest = dict(self.model_manifest)
 
         bt.logging.debug(
